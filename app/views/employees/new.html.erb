@@ -1,0 +1,30 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+	
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">New Employee</h3>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+	
+	</div>
+	
+</div>
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row profile">
+
+	<div class="col-md-6">
+	
+		<%= form_for @employee do |f| %>
+			<div class="form-body">
+			<%= render "employee_form_fields", :f => f %>
+			</div>
+			<%= f.submit "Create Employee", class: "btn btn-large btn-primary" %>
+		<% end %>
+		
+	</div>
+	
+</div>
+<!-- END PAGE CONTENT -->

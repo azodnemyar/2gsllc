@@ -1,0 +1,9 @@
+<% if @task.completed? %>
+	$('#edit_task_<%= @task.id %>').appendTo('#complete-task-list');
+	$('#edit_task_<%= @task.id %>').submitOnCheck();
+	$('#edit_task_<%= @task.id %>').wrap('<li class="text-muted">');
+	$('#edit_task_<%= @task.id %> input[type=checkbox]').remove();
+	$('#edit_task_<%= @task.id %> a').remove();
+<% else %>
+  $('#edit_task_<%= @task.id %>').appendTo('#active-task-list');
+<% end %>

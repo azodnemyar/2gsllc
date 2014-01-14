@@ -1,0 +1,30 @@
+/* here you can put your own css to customize and override the theme */
+
+.delete-checkbox {
+	display:none;
+}
+
+#machines_list_info {
+	position:absolute;
+}
+
+a .panel-title {
+	color:#ffffff;
+	text-decoration:none;
+}
+
+a:hover.accordion-toggle {
+	text-decoration:none;
+}
+
+.delete_image {
+	position:absolute;
+	bottom:10px;
+	right:10px;
+}
+
+.document-delete {
+	position:absolute;
+	top: -5px;
+	right: -5px;
+}

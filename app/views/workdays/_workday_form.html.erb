@@ -1,0 +1,15 @@
+<%= form_for [timesheet,@workday] do |wd| %>
+		<%= wd.text_field :employee_id, :value => @employee.id %>
+		<%= wd.text_field :timesheet_id, :value => timesheet.id %>
+		<%= wd.text_field :date, :value => week_date.to_date %>
+		<%= wd.fields_for :assignments do |a| %>
+			<fieldset>
+				<%= a.text_field :hours %>
+				<%= a.collection_select :job_id, Job.all, :id, :number, :prompt => true %>
+				<%= a.hidden_field :employee_id, :value => @employee.id %>
+				<%= a.hidden_field :timesheet_id, :value => timesheet.id %>
+				<%= a.hidden_field :date, :value => week_date.to_date %>
+			</fieldset>
+		<% end %>
+		<%= wd.submit %>
+<% end %>

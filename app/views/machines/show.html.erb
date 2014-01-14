@@ -1,0 +1,703 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+	
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">Equipment Profile</h3>
+			<ul class="page-breadcrumb breadcrumb">
+				<li>
+					<i class="icon-home"></i>
+					<%= link_to "Dashboard", root_path %>
+					<i class="icon-angle-right"></i>
+				</li>
+				<li>
+					<i class="icon-cogs"></i>
+					<%= link_to "All Equipment", machines_path %>
+					<i class="icon-angle-right"></i>
+				<li>
+				<li>
+					<%= @machine.year %> <%= @machine.make %> <%= @machine.model %>
+				</li>
+			</ul>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+	
+	</div>
+	
+</div>
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row margin-bottom-20">
+		
+		<!-- BEGIN EQUIPMENT PROFILE -->
+		<div class="col-md-3">
+			<% if @machine.attachments.exists? %>
+				<%= image_tag(@machine.attachments.first.file.url(:medium), :width => '100%', :height => 'auto') %>
+			<% end %>
+		</div><!-- END .COL-MD-3 -->
+
+		<div class="col-md-5">
+		<div class="portlet">
+				<div class="profile-info">
+					<h1 id="user"><%= @machine.year %> <%= @machine.make %> <%= @machine.model %> <%= link_to "#equipment-profile", 
+							class: "btn btn-warning btn-xs", data: {:toggle => 'modal' } do %> 
+						<i class="icon-pencil"></i> Edit
+					<% end %></h1>
+					<p><strong>Serial:</strong> <%= @machine.serial %></p>
+					<p><strong>Value:</strong> <%= number_to_currency(@machine.value) %></p>
+					<% if @machine.status? %>
+						<span class="btn green btn-xs">Active</span>
+					<% elsif %>
+						<span class="btn yellow btn-xs">Inactive</span>
+					<% end %>
+					
+					<!-- BEING PROFILE INFORMATION MODAL FORM -->
+					<div id="equipment-profile" class="modal fade" tabindex="-1" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<%= form_for @machine do |f| %>
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title">Update Equipment</h4>
+								</div><!-- END .MODAL-HEADER -->
+								
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group">
+											
+											<div class="form-group">
+											<%= f.label :year, class: "control-label" %>
+											<%= f.select :year, ((Time.zone.now.year - 40)..(Time.zone.now.year + 1)).to_a.reverse, 
+															{}, {class: "form-control"} %>
+											</div>
+											
+											<%= f.label :make, class: "control-label" %>
+											<%= f.text_field :make, class:"form-control" %>
+											</div>
+											
+											<div class="form-group">
+											<%= f.label :model, class: "control-label" %>
+											<%= f.text_field :model, class:"form-control" %>
+											</div>
+											
+											<div class="form-group">
+											<%= f.label :value, class: "control-label" %>
+											<%= f.text_field :value, class:"form-control" %>
+											</div>
+											
+											<div class="form-group">
+											<%= f.label :status, class: "control-label" %>
+											<%= f.select :status, options_for_select([['Active', true], ['Inactive', false]], @machine.status), 
+															 { :prompt => 'Select One' }, { :class => "form-control"} %>
+											</div>
+											
+										</div><!-- END .COL-MD-12 -->
+									</div><!-- END .ROW -->
+								</div><!-- END .MODAL-BODY -->
+								
+								<div class="modal-footer">
+									<%= f.submit "Update", class: "btn btn-primary" %>
+								
+									<button type="button" class="btn default" data-dismiss="modal">
+										Close
+									</button>
+								</div><!-- END .MODAL-FOOTER -->
+							<% end %><!-- END FORM -->
+							</div><!-- END MODAL-CONTENT -->
+						</div><!-- END .MODAL-DIALOG -->
+					</div><!-- END #RESPONSIVE -->
+					<!-- END MODAL FORM -->
+					
+				</div><!-- END .PROFILE-INFO -->
+		</div><!-- END .PORTLET -->
+		</div><!-- END COL-MD-4 -->
+		
+		<div class="col-md-4">
+			<div class="portlet box grey">
+				<div class="portlet-title" style="position:relative">
+					<div class="tools" style="float:left; position:absolute; left:0; top:0; width:70%; height:30px;">
+					   <a href="javascript:;" class="collapse" style="display:block; width:100%; height:100%;"></a>
+	            </div>
+					<div class="caption" style="padding-left:20px;">
+						<i class="icon-wrench"></i>
+						Service Log
+					</div><!-- END .CAPTION -->
+					<div class="actions">
+						<%= link_to "#responsive", id: "new_link", 
+							class: "btn btn-success btn-sm", data: {:toggle => 'modal' } do %> 
+							<i class="icon-plus"></i>
+						<% end %>
+						<%= link_to "#history", id: "new_link", 
+								class: "btn btn-warning btn-sm", data: {:toggle => 'modal' } do %> 
+							<i class="icon-time"></i>
+						<% end %>
+					</div><!-- END .ACTIONS -->
+				</div><!-- END .PORTLET-TITLE -->
+				<div class="portlet-body">
+					<div class="tasks" id="active-task-list">
+						<% if(@tasks) %>
+							<%= render @tasks %>
+						<% else %>
+							<p class="text-muted">No upcoming service dates.</p>
+						<% end %>
+					</div>
+					
+					<!-- BEING NEW SERVICE TASK MODAL FORM -->
+					<div id="responsive" class="modal fade" tabindex="-1" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+							<%= form_for [@taskable, @task] do |f| %>
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title">Add Service</h4>
+								</div><!-- END .MODAL-HEADER -->
+								
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-md-12">
+												<div class="form-group">
+												<%= f.text_field :name, placeholder: "Service Name", class: "form-control" %>
+												</div>
+												
+												<div class="form-group">
+												<%= f.text_field :due_date, placeholder: "Service Date", 
+																		:class => "date-select form-control" %> 
+												</div>
+												<%= f.hidden_field :user_id, :value => 1 %> 
+										</div><!-- END .COL-MD-12 -->
+									</div><!-- END .ROW -->
+								</div><!-- END .MODAL-BODY -->
+								
+								<div class="modal-footer">
+									<%= f.submit "New Service", class: "btn btn-success btn" %> 
+									<button type="button" class="btn default" data-dismiss="modal">
+										Close
+									</button>
+								</div><!-- END .MODAL-FOOTER -->
+								<% end %><!-- END FORM -->
+							</div><!-- END MODAL-CONTENT -->
+						</div><!-- END .MODAL-DIALOG -->
+					</div><!-- END #RESPONSIVE -->
+					<!-- END MODAL FORM -->
+					
+					<!-- BEING TASK HISTORY MODAL FORM -->
+					<div id="history" class="modal fade" tabindex="-1" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<%= form_tag clear_task_history_machines_path, method: :put do %>
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+									<h4 class="modal-title">Service History</h4>
+								</div><!-- END .MODAL-HEADER -->
+								
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="portlet">
+												<div class="portlet-body">
+													<div class="scroller" style="height:250px">
+													<div class="tasks" id="complete-task-list">
+														
+														<div class="text-muted">
+														<%= render partial: "tasks/completed_task" %>
+														</div>
+														
+													</div>
+													</div><!-- END SCROLLER -->
+												</div><!-- END PORTLET-BODY -->
+											</div><!-- END PORTLET -->
+										</div><!-- END .COL-MD-12 -->
+									</div><!-- END .ROW -->
+								</div><!-- END .MODAL-BODY -->
+								
+								<div class="modal-footer">
+									<%= button_tag(type: "submit", class: "btn red") do %>
+										<i class="icon-remove"></i> Clear History
+									<% end %>
+								
+									<button type="button" class="btn default" data-dismiss="modal">
+										Close
+									</button>
+								</div><!-- END .MODAL-FOOTER -->
+							<% end %><!-- END FORM -->
+							</div><!-- END MODAL-CONTENT -->
+						</div><!-- END .MODAL-DIALOG -->
+					</div><!-- END #RESPONSIVE -->
+					<!-- END MODAL FORM -->
+					
+				</div>
+				<!-- END .PORTLET-BODY -->
+			</div><!-- END .PORTLET -->
+		</div><!-- END .COL-MD-3 -->
+	<!-- END EQUIPMENT PROFILE -->
+</div><!-- END ROW -->
+
+<div class="row">
+
+	<div class="col-md-12">
+		
+	<!-- BEGIN PARTS ACCORDION -->
+	<%= form_tag machine_path, :multipart => true, method: :put do %>
+	<div class="portlet box blue">
+		<div class="portlet-title" style="position:relative;">
+			<div class="tools" style="float:left; position:absolute; left:0; top:0; width:70%; height:30px;">
+			   <a href="javascript:;" class="expand" style="display:block; width:100%; height:100%;"></a>
+	    	</div>
+	
+			<div class="caption" style="padding-left:20px;">
+				<i class="icon-cogs"></i> Parts
+			</div><!-- END CAPTION -->
+			
+			<div class="actions">
+				<%= link_to "#machine_meta", 
+					class: "btn green btn-sm", data: {:toggle => 'modal' } do %> 
+					<i class="icon-plus"></i>
+				<% end %>
+				<span class="btn yellow btn-sm edit-button">
+					<i class="icon-pencil"></i>
+				</span>
+				<%= button_tag(type: "submit", class: "delete-checkbox btn btn-xs red") do %>
+					<i class="icon-remove"></i>
+				<% end %>
+			</div><!-- END .ACTIONS -->
+		</div><!-- END PORTLET TITLE -->
+		
+		<div class="portlet-body display-hide">
+				<div class="table-responsive table-scrollable">
+					<table class="table table-bordered table-advance table-striped table-hover" id="machines_meta_list">
+						<thead>
+							<tr>
+								<th class="table-checkbox delete-checkbox"><input type="checkbox" class="group-checkable" data-set="#machines_meta_list .checkboxes" /></th>
+								<th>Part Name</th>
+								<th>Part Description</th>
+								<th>Image</th>
+							</tr>
+						</thead>
+						
+						<tbody>
+							<%= fields_for @machine, :multipart => true do |m| %>
+							<% @metas.each do |meta| %>
+								<tr class="odd gradeX">
+									<td class="delete-checkbox"><%= check_box_tag "machine_meta_ids[]", meta.id, false, class: "checkboxes"  %></td>
+									<td><%= meta.meta_key %></td>
+									<td><%= meta.meta_value %></td>
+									<td>
+										
+											<%= m.fields_for :machine_metas, meta do |f| %>
+
+												<% if meta.attachment %>
+													<%= link_to meta.attachment.file.url, class: "fancybox-button" do %>
+														<%= image_tag meta.attachment.file.url(:small) %>
+														<%= link_to meta.attachment, :method => :delete, :class => "attachment-delete btn red btn-xs",
+													                                     data: { confirm: "You sure?" } do %>
+															<i class="icon-trash"></i>
+														<% end %>
+													<% end %>
+												<% else %>
+												<% meta.build_attachment %>
+												<%= f.fields_for :attachment do |attachment| %>
+														<%= attachment.file_field(:file, class:"form-control input-medium") %>
+												<% end %>
+												<% end %>
+											<% end %>
+											<%= m.submit "Save", class: "btn blue" %>
+										
+									</td>
+								</tr>
+							<% end %><!-- END @METAS.EACH -->
+							<% end %>
+						</tbody>
+					</table>
+				</div><!-- END TABLE RESPONSIVE -->
+		</div><!-- END PORTLET BODY -->
+	</div><!-- END PORTLET BOX BLUE -->
+	<% end %>
+	<!-- END PARTS ACCORDION -->
+		
+		<!-- BEGIN MACHINE META MODAL FORM -->
+		<div id="machine_meta" class="modal fade" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+				<%= form_for(@machine, :html => { :multipart => true }) do |f| %>
+				<% @machine.machine_metas.build.build_attachment %>
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+						<h4 class="modal-title">Add Equipment Parts</h4>
+					</div><!-- END .MODAL-HEADER -->
+					
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-12">
+
+											<div class="form-group">
+											<%= f.fields_for :machine_metas do |meta| %>
+											<% if meta.object.new_record? %>
+												<fieldset>
+												<%= render "machine_meta_fields", :f => meta %>
+												<%= meta.hidden_field :_destroy %>
+												<% if !@machine.machine_metas.first.id.nil? %>
+												<%= link_to '#', class: "remove_fields btn red btn-xs" do %>
+													<i class="icon-remove"></i>
+												<% end %>
+												<% end %>
+
+												</fieldset>
+											<% end %>
+											<% end %>
+											<%= link_to_add_fields "Add Part", f, :machine_metas, :attachment %>
+											</div>
+											
+							</div><!-- END .COL-MD-12 -->
+						</div><!-- END .ROW -->
+					</div><!-- END .MODAL-BODY -->
+					
+					<div class="modal-footer">
+						<%= f.submit "Add Part", class: "btn btn-large btn-primary" %>
+						<button type="button" class="btn default" data-dismiss="modal">
+							Close
+						</button>
+					</div><!-- END .MODAL-FOOTER -->
+				<% end %><!-- END FORM -->
+				</div><!-- END MODAL-CONTENT -->
+			</div><!-- END .MODAL-DIALOG -->
+		</div><!-- END #RESPONSIVE -->
+		<!-- END MODAL FORM -->
+		<!-- END PARTS ACCORDION -->
+		
+		<!-- BEGIN IMAGE GALLERY ACCORDION -->
+		<div class="portlet box green">
+		
+			<div class="portlet-title" style="position:relative;">
+				<div class="tools" style="float:left; position:absolute; left:0; top:0; width:70%; height:30px;">
+				   <a href="javascript:;" class="expand" style="display:block; width:100%; height:100%;"></a>
+            </div>
+				<div class="caption" style="padding-left:20px;">
+					<i class="icon-camera"></i> Images
+				</div><!-- END CAPTION -->
+				
+				<div class="actions">
+					<%= link_to "#machine-images", 
+						class: "btn green btn-sm", data: {:toggle => 'modal' } do %> 
+						<i class="icon-plus"></i>
+					<% end %>
+				</div><!-- END .ACTIONS -->
+			</div><!-- END .PORTLET-TITLE -->
+			
+			<div class="portlet-body display-hide">
+					<div class="table-scrollable">
+						
+						<table class="table table-bordered" id="machine_images_list">
+							<tbody>
+								<tr>
+								<% if @machine.attachments.exists? %>
+									<% @machine.attachments.each do |attachment| %>
+										<td class="machine-image" style="position:relative;">
+											<%= image_tag(attachment.file.url(:medium), class: "machine_img") %>
+											<%= link_to attachment_path(attachment.id), :method => :delete, :class => "delete_image btn red btn-xs",
+										                                     data: { confirm: "You sure?" } do %>
+												<i class="icon-trash"></i>
+											<% end %>
+										</td>
+										
+									<% end %>
+								<% end %>
+								</tr>
+							</tbody>
+						</table>
+					</div><!-- END .TABLE-RESPONSIVE -->
+			</div><!-- END PORTLET-BODY -->
+		
+		</div><!-- END .PORTLET -->
+		
+		<!-- BEGIN NOTES ACCORDION -->
+		<div class="portlet box yellow">
+		
+			<div class="portlet-title" style="position:relative;">
+				<div class="tools" style="float:left; position:absolute; left:0; top:0; width:70%; height:30px;">
+				   <a href="javascript:;" class="expand" style="display:block; width:100%; height:100%;"></a>
+            </div>
+				<div class="caption" style="padding-left:20px;">
+					<i class="icon-book"></i> Notes
+				</div><!-- END CAPTION -->
+				
+				<div class="actions">
+					<%= link_to "#new-note", 
+						class: "btn yellow btn-sm", data: {:toggle => 'modal' } do %> 
+						<i class="icon-plus"></i>
+					<% end %>
+				</div><!-- END .ACTIONS -->
+			</div><!-- END .PORTLET-TITLE -->
+			
+			<div class="portlet-body display-hide">
+				
+				<% if @notes.any? %>
+				<ul class="list-group">
+					<% @notes.each do |note| %>
+						<li class="list-group-item">
+							<%= link_to "#note_#{note.id}", data: {:toggle => 'modal' } do %> 
+								<%= note.subject %>
+							<% end %>
+							 - 
+							<span class="text-muted"><em>Created on <%= note.created_at.strftime("%b %e, %Y") %></em></span>
+						
+							<%= link_to note, class: "note-delete", method: :delete, data: { confirm: "Are you sure?" } do %>
+								<i class="icon-remove"></i>
+							<% end %>
+						</li>
+					
+						<!-- BEING MACHINE NOTES MODAL FORM -->
+						<div id="note_<%= note.id %>" class="modal fade" tabindex="-1" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+										<h4 class="modal-title">Edit Note</h4>
+									</div><!-- END .MODAL-HEADER -->
+
+									<div class="modal-body">
+										<div class="row">
+											<div class="col-md-12">
+												<%= form_for note do |f| %>
+													
+													<%= f.label :subject %>
+													<%= f.text_field :subject, class:"form-control" %>
+
+													<%= f.label :body %>
+													<%= f.text_area :body, class:"form-control" %>
+
+											</div><!-- END .COL-MD-12 -->
+										</div><!-- END .ROW -->
+									</div><!-- END .MODAL-BODY -->
+
+									<div class="modal-footer">
+										<%= f.submit "Save", class: "btn btn-large btn-primary" %>
+										<% end %><!-- END FORM -->
+										<button type="button" class="btn default" data-dismiss="modal">
+											Close
+										</button>
+									</div><!-- END .MODAL-FOOTER -->
+								</div><!-- END MODAL-CONTENT -->
+							</div><!-- END .MODAL-DIALOG -->
+						</div><!-- END #RESPONSIVE -->
+						<!-- END MODAL FORM -->
+				<% end %>
+				</ul>
+				
+				<% else %>
+					<span class="text-muted">There are no notes to display.</span>
+				<% end %>
+					
+			</div><!-- END PORTLET-BODY -->
+		
+		</div><!-- END .PORTLET -->
+		<!-- END NOTES ACCORDION -->
+		
+		<!-- BEGIN DOCUMENTS ACCORDION -->
+		<div class="portlet box grey">
+		
+			<div class="portlet-title" style="position:relative;">
+				<div class="tools" style="float:left; position:absolute; left:0; top:0; width:70%; height:30px;">
+				   <a href="javascript:;" class="expand" style="display:block; width:100%; height:100%;"></a>
+            </div>
+				<div class="caption" style="padding-left:20px;">
+					<i class="icon-folder-close"></i> Documents
+				</div><!-- END CAPTION -->
+				
+				<div class="actions">
+					<%= link_to "#new-document", 
+						class: "btn grey btn-sm", data: {:toggle => 'modal' } do %> 
+						<i class="icon-plus"></i>
+					<% end %>
+				</div><!-- END .ACTIONS -->
+			</div><!-- END .PORTLET-TITLE -->
+			
+			<div class="portlet-body display-hide">
+			
+					<% if @documents.any? %>
+						<% @documents.each do |document| %>
+					
+							<div class="icon-btn">
+								<%= link_to document.pdf.url, target: "_blank" do %>
+									<i class="icon-file-text">
+									</i>
+									<div><%= document.pdf_file_name %></div>
+								<% end %>
+								<%= link_to document, :method => :delete, :class => "document-delete btn red btn-xs",
+							                                     data: { confirm: "You sure?" } do %>
+									<i class="icon-trash"></i>
+								<% end %>
+							</div>
+							
+						<% end %>
+					<% else %>
+						<span class="text-muted">There are no documents to display.</span>
+					<% end %>
+			</div><!-- END PORTLET-BODY -->
+		
+		</div><!-- END .PORTLET -->
+		<!-- END DOCUMENTS ACCORDION -->
+		
+		<!-- BEING MACHINE META MODAL FORM -->
+		<div id="machine_meta" class="modal fade" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+						<h4 class="modal-title">Add Equipment Parts</h4>
+					</div><!-- END .MODAL-HEADER -->
+					
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-12">
+								<%= form_for(@machine, :html => { :multipart => true }) do |f| %>
+								<%= render 'shared/error_messages', object: f.object %>
+
+											<div class="form-group">
+											<%= f.fields_for :machine_metas, @new_machine_meta do |meta| %>
+											<fieldset>
+											<%= render "machine_meta_fields", :f => meta %>
+											<%= meta.hidden_field :_destroy %>
+												<%= link_to '#', class: "btn red btn-xs remove_fields" do %>
+													<i class="icon-remove"></i>
+											<% end %>
+
+											</fieldset>
+											<% end %>
+											<%= link_to_add_fields "#", f, :machine_metas, :attachment %>
+											</div>
+											
+							</div><!-- END .COL-MD-12 -->
+						</div><!-- END .ROW -->
+					</div><!-- END .MODAL-BODY -->
+					
+					<div class="modal-footer">
+						<%= f.submit "Add Part", class: "btn btn-large btn-primary" %>
+						<% end %><!-- END FORM -->
+						<button type="button" class="btn default" data-dismiss="modal">
+							Close
+						</button>
+					</div><!-- END .MODAL-FOOTER -->
+				</div><!-- END MODAL-CONTENT -->
+			</div><!-- END .MODAL-DIALOG -->
+		</div><!-- END #RESPONSIVE -->
+		<!-- END MODAL FORM -->
+		
+		<!-- BEING MACHINE IMAGES MODAL FORM -->
+		<div id="machine-images" class="modal fade" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+						<h4 class="modal-title">Add Equipment Images</h4>
+					</div><!-- END .MODAL-HEADER -->
+					
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-12">
+								<%= form_for(@machine, :html => { :multipart => true }) do |f| %>
+								<% @machine.attachments.build %>
+								<%= render 'shared/error_messages', object: f.object %>
+
+											<fieldset>
+												<%= f.fields_for :attachments do |attachment| %>
+												<%= render "attachment_fields", :f => attachment %>
+												<% end %>
+											</fieldset>
+											<%= link_to_add_fields "#", f, :attachments %>
+											
+							</div><!-- END .COL-MD-12 -->
+						</div><!-- END .ROW -->
+					</div><!-- END .MODAL-BODY -->
+					
+					<div class="modal-footer">
+						<%= f.submit "Save", class: "btn btn-large btn-primary" %>
+						<% end %><!-- END FORM -->
+						<button type="button" class="btn default" data-dismiss="modal">
+							Close
+						</button>
+					</div><!-- END .MODAL-FOOTER -->
+				</div><!-- END MODAL-CONTENT -->
+			</div><!-- END .MODAL-DIALOG -->
+		</div><!-- END #RESPONSIVE -->
+		<!-- END MODAL FORM -->
+		
+		<!-- BEGIN NEW MACHINE NOTES MODAL FORM -->
+		<div id="new-note" class="modal fade" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+						<h4 class="modal-title">Add Note</h4>
+					</div><!-- END .MODAL-HEADER -->
+					
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-12">
+								<%= form_for @note do |f| %>
+									<%= render 'shared/error_messages', object: f.object %>
+									<%= f.label :subject %>
+									<%= f.text_field :subject, class:"form-control" %>
+									
+									<%= f.label :body %>
+									<%= f.text_area :body, class:"form-control" %>
+									
+									<%= f.hidden_field :machine_id,	:value => @machine.id %>
+									<%= f.hidden_field :user_id,		:value => current_user.id %>
+											
+							</div><!-- END .COL-MD-12 -->
+						</div><!-- END .ROW -->
+					</div><!-- END .MODAL-BODY -->
+					
+					<div class="modal-footer">
+						<%= f.submit "Save", class: "btn btn-large btn-primary" %>
+						<% end %><!-- END FORM -->
+						<button type="button" class="btn default" data-dismiss="modal">
+							Close
+						</button>
+					</div><!-- END .MODAL-FOOTER -->
+				</div><!-- END MODAL-CONTENT -->
+			</div><!-- END .MODAL-DIALOG -->
+		</div><!-- END #RESPONSIVE -->
+		<!-- END NEW MACHINE NOTES MODAL FORM -->
+		
+		<!-- BEGIN NEW MACHINE NOTES MODAL FORM -->
+		<div id="new-document" class="modal fade" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+						<h4 class="modal-title">Add Document</h4>
+					</div><!-- END .MODAL-HEADER -->
+					
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-md-12">
+								<%= form_for @document do |f| %>
+									<%= render 'shared/error_messages', object: f.object %>
+									<%= f.label "File" %>
+									<%= f.file_field :pdf, class:"form-control" %>									
+									<%= f.hidden_field :machine_id,	:value => @machine.id %>
+											
+							</div><!-- END .COL-MD-12 -->
+						</div><!-- END .ROW -->
+					</div><!-- END .MODAL-BODY -->
+					
+					<div class="modal-footer">
+						<%= f.submit "Save", class: "btn btn-large btn-primary" %>
+						<% end %><!-- END FORM -->
+						<button type="button" class="btn default" data-dismiss="modal">
+							Close
+						</button>
+					</div><!-- END .MODAL-FOOTER -->
+				</div><!-- END MODAL-CONTENT -->
+			</div><!-- END .MODAL-DIALOG -->
+		</div><!-- END #RESPONSIVE -->
+		<!-- END NEW MACHINE NOTES MODAL FORM -->
+		
+	</div><!-- END COL-MD-12 -->
+
+</div><!-- END .ROW PROFILE -->
+
+<!-- END PAGE CONTENT -->

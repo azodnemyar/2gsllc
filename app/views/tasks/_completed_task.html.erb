@@ -1,0 +1,16 @@
+
+	<% @tasks.each do |task| %>
+		<% if task.completed %>
+			<li>
+			<%= hidden_field_tag "task_ids[]", task.id  %>
+			<%= task.name %>
+			<% if task.due_date %>
+				(<%= task.due_date.strftime("%b %e, %Y") %>)
+			<% end %>
+			- completed by <%= User.find(task.completed_by).name %> on 
+				<% if task.due_date %>
+					(<%= task.updated_at.strftime("%b %e, %Y") %>)
+				<% end %>
+			</li>
+		<% end %>
+	<% end %>

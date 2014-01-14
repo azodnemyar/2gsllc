@@ -1,0 +1,20 @@
+<tr class="odd gradeX">
+   <td class="delete-checkbox"><%= check_box_tag "machine_ids[]", machine.id, false, class: "checkboxes"  %></td>
+   <td>
+		<% if machine.attachments.exists? %>
+			<%= link_to (image_tag machine.attachments.first.file.url(:small)),
+							machine_path(machine) %>
+		<% end %>
+	</td>
+   <td ><%= link_to machine.make, machine_path(machine) %></td>
+   <td><%= link_to machine.model, machine_path(machine) %></td>
+	<td><%= link_to machine.year, machine_path(machine) %></td>
+	<td><%= link_to machine.serial, machine_path(machine) %></td>
+	<td>
+		<% if machine.status? %>
+			<%= link_to "Active", machine_path(machine), class: "btn green btn-xs" %>
+		<% elsif %>
+			<%= link_to "Inactive", machine_path(machine), class: "btn yellow btn-xs" %>
+		<% end %>
+	</td>
+</tr>

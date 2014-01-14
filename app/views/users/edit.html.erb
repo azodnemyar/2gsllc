@@ -1,0 +1,82 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+	
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">Update Profile</h3>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+	
+	</div>
+	
+</div>
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row profile">
+
+	<div class="col-md-12">
+	
+		<%= form_for(@user, :html => { :multipart => true, :class => "horizontal-form" }) do |f| %>
+			<% if !@user.attachment %>
+				<% @user.build_attachment %>
+			<% end %>
+			
+			<div class="form-body">
+			
+				<div class="row">
+				
+					<div class="col-md-6">
+						<%= render 'shared/error_messages', object: f.object %>
+					
+						<div class="form-group">
+							<%= f.label :name, class: "control-label" %>
+							<%= f.text_field :name, class:"form-control" %>
+						</div>
+						
+						<div class="form-group">
+							<%= f.label :username, class: "control-label" %>
+							<%= f.text_field :username, class:"form-control" %>
+						</div>
+						
+						<div class="form-group">
+							<%= f.label :password, class: "control-label" %>
+							<%= f.password_field :password, class:"form-control" %>
+						</div>
+						
+						<div class="form-group">
+							<%= f.label :password_confirmation, class: "control-label" %>
+							<%= f.password_field :password_confirmation, class:"form-control" %>
+						</div>
+						
+						<div class="form-group">
+							<% if @user.attachment %>
+								<%= image_tag(@user.attachment.file.url) %>
+							<% end %>
+						</div>
+						
+						<div class="form-group">
+							<%= f.fields_for :attachment do |attachment| %>
+								<%= render "shared/attachment_fields", :f => attachment %>
+							<% end %>
+						</div>
+						
+						<% if current_user.admin? %>
+							<div class="form-inline">
+								<%= f.check_box :admin, {}, "t", "f" %>	<%= f.label :admin %>
+							</div>
+						<% end %>
+					
+					</div>
+				
+				</di>
+			
+			</div>
+		  	
+		<%= f.submit "Update User", class: "btn btn-large btn-primary" %>
+		<% end %>
+	
+	</div>
+	
+</div>
+<!-- END PAGE CONTENT -->

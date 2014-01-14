@@ -1,0 +1,129 @@
+<% provide(:title, 'All Machines') %>
+
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+	
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">All Equipment</h3>
+			<ul class="page-breadcrumb breadcrumb">
+				<li>
+					<i class="icon-home"></i>
+					<%= link_to "Dashboard", root_path %>
+					<i class="icon-angle-right"></i>
+				</li>
+				<li>
+					<i class="icon-cogs"></i>
+					<%= link_to "All Equipment", machines_path %>
+					<i class="icon-angle-right"></i>
+				<li>
+			</ul>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+	
+	</div>
+	
+</div>
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row">
+	<div class="col-md-12">
+			<div class="portlet box ">
+				<%= form_tag delete_machines_path, method: :put do %>
+                 <div class="portlet-body">
+                    <div class="table-toolbar">
+                       <div class="btn-group">
+                          <%= link_to "#new-machine", class: "btn btn-large btn-primary", data: {:toggle => 'modal' } do %>
+									<i class="icon-plus"></i> New
+								<% end %>
+							</div>
+							<div class="btn-group">
+								<span class="btn btn-large btn-success edit-button">
+									<i class="icon-edit"></i> Edit
+								</span>
+							</div>
+							
+							<div class="btn-group">
+								<%= button_tag(type: "submit", class: "delete-checkbox btn btn-large btn-danger clearfix") do %>
+									<i class="icon-remove"></i> Delete
+								<% end %>
+							</div>
+                    </div>
+					
+                    <table class="table table-striped table-bordered table-hover" id="machines_list">
+                       <thead>
+                          <tr>
+                             <th class="table-checkbox delete-checkbox"><input type="checkbox" class="group-checkable" data-set="#machines_list .checkboxes" /></th>
+                             <th style="width:50px;">Image</th>
+									<th>Make</th>
+									<th>Model</th>
+									<th>Year</th>
+									<th>Serial</th>
+									<th>Status</th>
+                          </tr>
+                       </thead>
+                       <tbody>
+							<%= render @machines %>
+							</tbody>
+                    </table>
+
+						<div class="table-toolbar">
+                       <div class="btn-group">
+                          <%= link_to "#new-machine", class: "btn btn-large btn-primary", data: {:toggle => 'modal' } do %>
+									<i class="icon-plus"></i> New
+								<% end %>
+							</div>
+							<div class="btn-group">
+								<span class="btn btn-large btn-success edit-button">
+									<i class="icon-edit"></i> Edit
+								</span>
+							</div>
+							
+							<div class="btn-group">
+								<%= button_tag(type: "submit", class: "delete-checkbox btn btn-large btn-danger clearfix") do %>
+									<i class="icon-remove"></i> Delete
+								<% end %>
+							</div>
+                    </div>
+					<% end %>
+                 </div>
+              </div>
+			
+   </div>
+</div>
+
+<!-- BEGIN NEW MACHINE MODAL FORM -->
+<div id="new-machine" class="modal fade" tabindex="-1" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<%= form_for(@machine, :html => { :multipart => true }) do |f| %>
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+				<h4 class="modal-title">New Equipment</h4>
+			</div><!-- END .MODAL-HEADER -->
+			
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+					
+						<%= render "machine_fields", :f => f %>
+						
+					</div><!-- END .COL-MD-12 -->
+				</div><!-- END .ROW -->
+			</div><!-- END .MODAL-BODY -->
+			
+			<div class="modal-footer">
+				<%= f.submit "Save Equipment", class: "btn btn-primary" %>
+			
+				<button type="button" class="btn default" data-dismiss="modal">
+					Close
+				</button>
+			</div><!-- END .MODAL-FOOTER -->
+		<% end %><!-- END FORM -->
+		</div><!-- END MODAL-CONTENT -->
+	</div><!-- END .MODAL-DIALOG -->
+</div><!-- END #RESPONSIVE -->
+<!-- END MODAL FORM -->
+
+<!-- END PAGE CONTENT -->

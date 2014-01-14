@@ -1,0 +1,43 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+		
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">Edit Employee</h3>
+			<ul class="page-breadcrumb breadcrumb">
+				<li>
+					<i class="icon-home"></i>
+					<%= link_to "Dashboard", root_path %>
+					<i class="icon-angle-right"></i>
+				</li>
+				
+				<li>
+					<i class="icon-sitemap"></i>
+					<%= link_to "Employees", employees_path %>
+					<i class="icon-angle-right"></i>
+				</li>
+				
+				<li>
+					<%= @employee.full_name %>
+				</li>
+			</ul>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+		
+	</div><!-- END COL-MD-12 -->
+	
+</div><!-- END ROW -->
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row">
+<div class="col-md-12">
+
+	<%= form_for @employee do |f| %>
+		<%= render "employee_form_fields", :f => f %>	
+		<%= f.submit "Update Employee", class: "btn btn-large btn-primary" %>
+	<% end %>
+	
+</div>
+</div>
+<!-- END PAGE CONTENT -->

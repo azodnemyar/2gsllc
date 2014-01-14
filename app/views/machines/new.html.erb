@@ -1,0 +1,46 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+	
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">Add Equipment</h3>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+	
+	</div>
+	
+</div>
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row">
+
+	<%= form_for(@machine, :html => { :multipart => true, class: "horizontal-form" }) do |f| %>
+	<%= render 'shared/error_messages', object: f.object %>
+			
+	<div class="form-body">
+	
+		<div class="row">
+		
+			<div class="col-md-6">
+			
+				<%= render "machine_fields", :f => f %>
+			
+			</div>
+		
+		</div>
+		
+		<div class="form-actions center">
+		
+			<%= f.submit "Add Equipment", class: "btn btn-large btn-primary" %>
+			
+			<%= link_to "Cancel", machines_path, class: "btn btn-large" %>
+		
+		</div>
+	
+	</div>
+	
+	<% end %>
+	
+</div>
+<!-- END PAGE CONTENT -->

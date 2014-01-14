@@ -1,0 +1,20 @@
+<tr>
+	<td>
+		<% if user.attachment %>
+			<%= link_to (image_tag user.attachment.file.url(:small)), edit_user_path(user) %>
+		<% end %>
+	</td>
+	<td><%= user.name %></td>
+	<td><%= link_to "view", user_path(user) %></td>
+	<td>
+		<% if current_user.admin? && !current_user?(user) %>
+			<%= link_to "edit", edit_user_path(user) %>
+		<% end %>
+	</td>
+	<td>
+		<% if current_user.admin? && !current_user?(user) %>
+			<%= link_to "delete", user, method: :delete, data: { confirm: "You sure?" } %>
+		<% end %>
+	</td>
+</tr>
+

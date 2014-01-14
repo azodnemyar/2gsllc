@@ -1,0 +1,143 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+	
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">Jobs</h3>
+			<ul class="page-breadcrumb breadcrumb">
+				<li>
+					<i class="icon-home"></i>
+					<%= link_to "Dashboard", root_path %>
+					<i class="icon-angle-right"></i>
+				</li>
+			</ul>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+	
+	</div>
+	
+</div>
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row">
+<div class="col-md-12">
+
+	<div class="portlet box ">
+		<!-- BEGIN FORM -->
+		<%= form_tag delete_jobs_path, method: :put do %>
+		
+			<!-- BEGIN PORTLET BODY -->
+			<div class="portlet-body">
+			
+				<div class="table-toolbar">
+               <div class="btn-group">
+               		<%= link_to "#new_job", class: "btn btn-large btn-primary", data: {:toggle => 'modal' } do %> 
+						<i class="icon-plus"></i> New
+						<% end %>
+					</div>
+					
+					<div class="btn-group">
+						<span class="btn btn-large btn-success edit-button">
+						<i class="icon-edit"></i> Edit
+						</span>
+					</div>
+					
+					<div class="btn-group">
+						<%= button_tag(type: "submit", class: "delete-checkbox btn btn-large btn-danger clearfix") do %>
+						<i class="icon-remove"></i> Delete
+						<% end %>
+					</div>
+				</div>
+				
+				<div class="table-responsive">
+				<table class="table table-bordered table-striped" id="jobs_list">
+					<thead>
+					<tr>
+						<th class="table-checkbox delete-checkbox"><input type="checkbox" class="group-checkable" data-set="#jobs_list .checkboxes" /></th>
+						<th>Number</th>
+						<th>Name</th>
+						<th>Created On</th>
+						<th>Status</th>
+					</tr>
+					</thead>
+					
+					<tbody>
+					<% @jobs.each do |job| %>
+						<tr class="odd gradeX">
+						   <td class="delete-checkbox"><%= check_box_tag "job_ids[]", job.id, false, class: "checkboxes"  %></td>
+							<td><%= link_to job.number, edit_job_path(job) %></td>
+							<td><%= link_to job.name, edit_job_path(job) %></td>
+							<td><%= link_to job.created_at.strftime("%B %e, %Y"), edit_job_path(job) %></td>
+							<td>
+								<%= link_to edit_job_path(job) do %>
+									<%= job.status == true ? "Active" : "Inactive" %>
+								<% end %>
+							</td>
+						</tr>
+					<% end %>
+					</tbody>
+				</table>
+				
+				<div class="table-toolbar">
+               <div class="btn-group">
+               		<%= link_to "#new_job", class: "btn btn-large btn-primary", data: {:toggle => 'modal' } do %> 
+						<i class="icon-plus"></i> New
+						<% end %>
+					</div>
+					
+					<div class="btn-group">
+						<span class="btn btn-large btn-success edit-button">
+						<i class="icon-edit"></i> Edit
+						</span>
+					</div>
+					
+					<div class="btn-group">
+						<%= button_tag(type: "submit", class: "delete-checkbox btn btn-large btn-danger clearfix") do %>
+						<i class="icon-remove"></i> Delete
+						<% end %>
+					</div>
+				</div>
+			
+			</div>
+			<!-- END PORTLET BODY -->
+	
+		<% end %>
+		<!-- END FORM -->
+	</div>
+			
+			<!-- BEGIN NEW JOB MODAL FORM -->
+			<div id="new_job" class="modal fade" tabindex="-1" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<%= form_for @job do |f| %>
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+							<h4 class="modal-title">New Job</h4>
+						</div><!-- END .MODAL-HEADER -->
+
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-md-12">
+
+									<%= render "job_form", :f => f %>
+
+								</div><!-- END .COL-MD-12 -->
+							</div><!-- END .ROW -->
+						</div><!-- END .MODAL-BODY -->
+
+						<div class="modal-footer">
+							<%= f.submit "Create Job", class: "btn btn-primary" %>
+
+							<button type="button" class="btn default" data-dismiss="modal">
+								Close
+							</button>
+						</div><!-- END .MODAL-FOOTER -->
+					<% end %><!-- END FORM -->
+					</div><!-- END MODAL-CONTENT -->
+				</div><!-- END .MODAL-DIALOG -->
+			</div><!-- END #RESPONSIVE -->
+			<!-- END MODAL FORM -->
+</div>
+</div>
+<!-- END PAGE CONTENT -->

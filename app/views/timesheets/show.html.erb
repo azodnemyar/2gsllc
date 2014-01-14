@@ -1,0 +1,142 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+		
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">Timesheets</h3> 
+			
+			<ul class="page-breadcrumb breadcrumb">
+				<li>
+					<i class="icon-home"></i>
+					<%= link_to "Dashboard", root_path %>
+					<i class="icon-angle-right"></i>
+				</li>
+				<li>
+					<i class="icon-time"></i>
+					<%= link_to "All Timesheets", timesheets_path %>
+					<i class="icon-angle-right"></i>
+				</li>
+				<li>
+					<%= @timesheet.startdate.strftime("%b %e") %> - <%= @timesheet.enddate.strftime("%b %e, %Y") %>
+				</li>
+			</ul>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+		
+	</div><!-- END COL-MD-12 -->
+	
+</div><!-- END ROW -->
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row">
+<div class="col-md-12">
+	
+	<!-- BEGIN PORTLET BOX -->
+	<div class="portlet box ">
+		
+		<!-- BEGIN RESPONSIVE TABLE -->
+		<div class="table-responsive">
+			<table class="table table-striped table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>Employee</th>
+						<% @timesheet.date_range(@timesheet.startdate, @timesheet.enddate).each do |week_date| %>
+								<th><%= week_date.to_date.strftime("%a %d") %><br /></th>
+						<% end %>
+						<th>Total</th>
+					</tr>
+				</thead>
+		
+				<tbody>
+				<% @employees.each do |employee| %>
+				<% if (employee.workdays.active(@timesheet)).any? %>
+					<tr>
+						<td><%= employee.full_name %></td>
+						
+						<% employee.workdays.active(@timesheet).each do |workday| %>
+							<td>
+							
+							<div class="btn-group">
+								<button type="button" class="btn btn-xs dropdown-toggle clearfix" data-hover="dropdown" data-toggle="dropdown" data-delay="1000" data-close-others="true">
+									<span><i class="icon-plus"></i></i> Add <i class="icon-angle-down"></i></span>
+								</button>
+
+								<div class="dropdown-menu dropdown">
+									<%= form_for @assignment do |assignment_form| %>
+										<div class="form-body">
+								
+												<%= assignment_form.hidden_field :workday_id, :value => workday.id %>
+												<%= assignment_form.hidden_field :employee_id, :value => employee.id %>
+												<%= assignment_form.hidden_field :timesheet_id, :value => @timesheet.id %>
+												<%= assignment_form.hidden_field :date, :value => workday.date %>
+												<div class="form-group">
+													<%= assignment_form.text_field :hours, class: "form-control" %>
+												</div>
+												<div class="form-group">
+													<%= assignment_form.collection_select(:job_id, Job.where(status: true) << Job.new(:name => "[Add New Job]", :id => "0"), :id, :name, {:prompt => true}, { :class => "form-control assignment_job_id"}) %>
+												</div>
+												<%= assignment_form.submit "Save", class: "btn green btn-xs" %>
+											</div>
+										</div>
+									<% end %>
+								</div>
+							</div>
+								
+								<div class="row">
+									<div class="col-md-12">
+									<% workday.assignments.each do |assignment| %>
+										<span class="badge badge-info badge-roundless"><%= assignment.hours %> hrs on <%= Job.find(assignment.job_id).name %></span><br />
+									<% end %>
+									</div>
+								</div>
+							</td>
+						<% end %>
+						<td><span class="label label-primary"><%= employee.assignments.active(@timesheet).sum('hours') %></span></td>
+					</tr>
+				<% end %>
+				<% end %>
+				</tbody>
+	
+			<table>
+		</div>
+		<!-- END RESPONSIVE TABLE -->
+	</div>
+	<!-- END PORTLET BOX -->
+	
+	<!-- BEGIN NEW EMPLOYEE MODAL FORM -->
+	<div id="new_job" class="modal fade" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<%= form_for @job, :remote => true do |f| %>
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+					<h4 class="modal-title">New Job</h4>
+				</div><!-- END .MODAL-HEADER -->
+
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+
+							<%= render "jobs/job_form", :f => f %>
+
+						</div><!-- END .COL-MD-12 -->
+					</div><!-- END .ROW -->
+				</div><!-- END .MODAL-BODY -->
+
+				<div class="modal-footer">
+					<%= f.submit "Create Job", class: "btn btn-primary" %>
+
+					<button type="button" class="btn default" data-dismiss="modal">
+						Close
+					</button>
+				</div><!-- END .MODAL-FOOTER -->
+				<% end %><!-- END FORM -->
+			</div><!-- END MODAL-CONTENT -->
+		</div><!-- END .MODAL-DIALOG -->
+	</div><!-- END #RESPONSIVE -->
+	<!-- END MODAL FORM -->
+	
+</div>
+</div>
+<!-- END PAGE CONTENT -->

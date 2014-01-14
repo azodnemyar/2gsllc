@@ -1,0 +1,11 @@
+<h1>Edit TimeSheet - <%= @employee.full_name %></h1>
+<%= form_for @timesheet do |f| %>
+	
+	<%= f.fields_for :workdays do |workday_form| %>
+		<%= workday_form.text_field :employee_id, :value => @timesheet.employee_id %>
+		<%= workday_form.text_field :date, :value => @timesheet.startdate %>
+		<%= workday_form.text_field :timesheet_id, :value => @timesheet.id %>
+	<% end %>
+	
+	<%= f.submit "Update TimeSheet", class: "btn btn-large btn-primary" %>
+<% end %>

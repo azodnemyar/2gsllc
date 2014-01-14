@@ -1,0 +1,48 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+	
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">User Profile</h3>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+	
+	</div>
+	
+</div>
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row profile">
+
+	<div class="col-md-12">
+	
+		<div class="tab-content">
+	
+			<div class="row">
+		
+				<div class="col-md-4">
+					<% if !(@user.attachment).nil? %>
+						<%= image_tag(@user.attachment.file.url(:medium), class: "img-circle", width: "100%", height:"auto") %>
+					<% end %>
+					<div class="clearfix"></div>
+					<%= link_to "Edit", edit_user_path, class: "btn red"  %>
+				</div>
+			
+				<div class="row">
+			
+					<div class="col-md-7 profile-info">
+						<h1><%= @user.name %></h1>
+						<h3>Username: <%= @user.username %></h3>
+					</div>
+			
+				</div>
+		
+			</div>
+			
+		</div>
+	
+	</div>
+	
+</div>
+<!-- END PAGE CONTENT -->

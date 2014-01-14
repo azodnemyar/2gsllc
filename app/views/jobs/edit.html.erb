@@ -1,0 +1,41 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+	
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">Job <%= @job.number %></h3>
+			<ul class="page-breadcrumb breadcrumb">
+				<li>
+					<i class="icon-home"></i>
+					<%= link_to "Dashboard", root_path %>
+					<i class="icon-angle-right"></i>
+				</li>
+				
+				<li>
+					<i class="icon-road"></i>
+					<%= link_to "All Jobs", jobs_path %>
+					<i class="icon-angle-right"></i>
+				</li>
+				
+				<li>
+					<%= @job.number %>
+				</li>
+			</ul>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+	
+	</div>
+	
+</div>
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row">
+<div class="col-md-12">
+	<%= form_for @job do |f| %>
+		<%= render "job_form", :f => f %>
+		<%= f.submit "Update Job", class: "btn btn-primary" %>
+	<% end %>		
+</div>
+</div>
+<!-- END PAGE CONTENT -->

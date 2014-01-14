@@ -1,0 +1,55 @@
+<div class="form-group">
+<%= f.label :make, class: "control-label" %>
+<%= f.text_field :make, class:"form-control" %>
+</div>
+
+<div class="form-group">
+<%= f.label :model, class: "control-label" %>
+<%= f.text_field :model, class:"form-control" %>
+</div>
+
+<div class="form-group">
+<%= f.label :year, class: "control-label" %>
+<%= f.select(:year, ((Time.zone.now.year - 40)..(Time.zone.now.year + 1)).to_a.reverse, {}, 
+				 {:class => "form-control"} ) %>
+</div>
+
+<div class="form-group">
+<%= f.label :serial, class: "control-label" %>
+<%= f.text_field :serial, class:"form-control" %>
+</div>
+
+<div class="form-group">
+<%= f.label :value, class: "control-label" %>
+<%= f.text_field :value, class:"form-control" %>
+</div>
+
+<div class="form-group">
+<%= f.label :status, class: "control-label" %>
+<%= f.select :status, options_for_select([['Active', 1], ['Inactive', 2]]), 
+				 {:prompt => 'Select One'}, {:class => "form-control"} %>
+</div>
+
+<div class="form-group">
+<%= f.fields_for :attachments do |attachment| %>
+<%= render "shared/attachment_fields", :f => attachment %>
+<% end %>
+</div>
+
+</div>
+
+<div class="col-md-6">
+
+<div class="form-group">
+<%= f.fields_for :machine_metas do |meta| %>
+<fieldset>
+<%= render "machine_meta_fields", :f => meta %>
+<%= meta.hidden_field :_destroy %>
+<% if !@machine.machine_metas.first.id.nil? %>
+<%= link_to "remove", '#', class: "remove_fields" %>
+<% end %>
+
+</fieldset>
+<% end %>
+<%= link_to_add_fields "Add Part", f, :machine_metas, :attachment %>
+</div>

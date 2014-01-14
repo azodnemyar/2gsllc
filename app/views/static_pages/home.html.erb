@@ -1,0 +1,91 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+	
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">Dashboard</h3>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+	
+	</div>
+	
+</div>
+<!-- END PAGE HEADER -->
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row">
+
+	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+	
+		<%= link_to machines_path do %>
+			<div class="dashboard-stat blue">
+				<div class="visual">
+					<i class="icon-cogs"></i>
+				</div>
+				<div class="details">
+					<div class="number">
+						Equipment
+					</div>
+				</div>
+				<span class="more">View More <i class="icon-circle-arrow-right m-icon-white"></i></span>
+			</div>
+		<% end %>
+	
+	</div>
+	
+	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+	
+		<%= link_to current_timesheets_path do %>
+			<div class="dashboard-stat green">
+				<div class="visual">
+					<i class="icon-time"></i>
+				</div>
+				<div class="details">
+					<div class="number">
+						Timesheets
+					</div>
+				</div>
+				<span class="more">View More <i class="icon-circle-arrow-right m-icon-white"></i></span>
+			</div>
+		<% end %>
+	
+	</div>
+	
+	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+	
+		<%= link_to jobs_path do %>
+			<div class="dashboard-stat red">
+				<div class="visual">
+					<i class="icon-road"></i>
+				</div>
+				<div class="details">
+					<div class="number">
+						Jobs
+					</div>
+				</div>
+				<span class="more">View More <i class="icon-circle-arrow-right m-icon-white"></i></span>
+			</div>
+		<% end %>
+	
+	</div>
+	
+	<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+	
+		<%= link_to users_path do %>
+			<div class="dashboard-stat purple">
+				<div class="visual">
+					<i class="icon-user"></i>
+				</div>
+				<div class="details">
+					<div class="number">
+						Users
+					</div>
+				</div>
+				<span class="more">View More <i class="icon-circle-arrow-right m-icon-white"></i></span>
+			</div>
+		<% end %>
+	
+	</div>
+	
+</div>
+<!-- END PAGE CONTENT -->

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
+<html>
+
+<head>
+	<meta charset="utf-8" />
+  	<title>TwogsApp</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta content="" name="description" />
+   <meta content="" name="author" />
+   <meta name="MobileOptimized" content="320">
+
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+
+	<script>
+		jQuery(document).ready(function() {    
+			App.init(); 
+			Index.init();
+			TableManaged.init();
+		});
+	</script>
+
+
+  <%= csrf_meta_tags %>
+	<!--[if lt IE 9]>
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+   <![endif]-->
+</head>
+
+<body class="page-header-fixed">
+
+	<!-- BEGIN HEADER -->   
+	<div class="header navbar navbar-inverse navbar-fixed-top">
+		
+		<!-- BEGIN TOP NAVIGATION BAR -->
+		<div class="header-inner">
+		
+			<!-- BEGIN LOGO -->
+			<%= link_to root_path, class: "navbar-brand" do %>
+				<%= image_tag("2gs-logo.png", height:"24", width:"auto")  %>
+			<% end %>
+			<!-- END LOGO -->
+			
+			<!-- BEGIN RESPONSIVE MENU TOGGLER -->
+			<%= link_to image_tag('menu-toggler.png'), "javascript:;", class: "navbar-toggle", data: { toggle: "collapse", target: ".navbar-collapse" } %>
+			<!-- END RESPONSIVE MENU TOGGLER -->
+			
+			<% if signed_in? %>
+			<!-- BEGIN TOP NAVIGATION MENU -->
+			<ul class="nav navbar-nav pull-right">
+			
+				<!-- BEGIN NOTIFICATION DROPDOWN -->
+				<li class="dropdown" id="header_notification_bar">
+					
+					<%= link_to "#", class: "dropdown-toggle", data: { toggle: "dropdown", hover: "dropdown" } do %>
+						<i class='icon-warning-sign'></i>
+						<% if Task.overdue.active.any? %>
+							<span class='badge'><%= Task.overdue.active.count %></span>
+						<% end %>
+					<% end %>
+					
+					<ul class="dropdown-menu extended notification">
+					
+						<li>
+							<p>You have <%= Task.overdue.active.count %> tasks overdue</p>
+						</li>
+						
+						<li>
+							<ul class="dropdown-menu-list scroller" style="height:180px;">
+						
+								<% Task.overdue.active.each do |task| %>
+								<li>
+									<%= link_to machine_path(task.taskable_id) do %>
+										<span class="label label-sm label-icon label-success"><i class="icon-bell"></i></span>
+										<%= task.name %>
+										<span class="time"><%= time_ago_in_words(task.due_date) %> ago</span>
+									<% end %>
+								</li>
+								<% end %>
+						
+							</ul>
+						</li>
+					
+					</ul>
+					
+				</li>
+				<!-- END NOTIFICATION DROPDOWN -->
+				
+				<!-- BEGIN USER LOGIN DROPDOWN -->
+				<li class="dropdown user">
+					<%= link_to "#", class: "dropdown-toggle", data: { toggle: "dropdown", hover: "dropdown" } do %>
+						<% if current_user.attachment %>
+							<%= image_tag(current_user.attachment.file.url(:small), width: 26, height: 26) %>
+						<% end %>
+						<i class="icon-angle-down"></i>
+					<% end %>
+					
+					<ul class="dropdown-menu">
+					
+						<li>
+							<%= link_to edit_user_path(current_user) do %>
+								<i class="icon-user"></i> My Profile
+							<% end %>
+						</li>
+						
+						<li>
+							<%= link_to "javascript:;", id: "trigger_fullscreen" do %>
+								<i class="icon-move"></i> Full Screen
+							<% end %>
+						</li>
+						
+						<li>
+							<%= link_to signout_path, method: "delete" do %>
+								<i class="icon-key"></i> Log Out
+							<% end %>
+						</li>
+					
+					</ul>
+				</li>
+				<!-- END USER LOGIN DROPDOWN -->
+			
+			</ul>
+			<!-- END TOP NAVIGATION MENU -->
+			<% end %>
+		
+		</div>
+		<!-- END TOP NAVIGATION BAR -->
+		
+	</div>
+	<!-- END HEADER -->
+	
+	<div class="clearfix"></div>
+	
+	<!-- BEGIN CONTAINER -->
+	<div class="page-container">
+	
+		<!-- BEGIN SIDEBAR -->
+		<div class="page-sidebar navbar-collapse collapse">
+		
+			<!-- BEGIN SIDEBAR MENU -->
+			<ul class="page-sidebar-menu">
+			
+				<li>
+					<!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+					<div class="sidebar-toggler hidden-phone"></div>
+					<!-- END SIDEBAR TOGGLER BUTTON -->
+				</li>
+		
+				<li class="start">
+					<%= link_to root_path do %><i class="icon-home"></i><span class="title">Dashboard</span><% end %>
+				</li>
+			
+				<li>
+					<%= link_to machines_path do %>
+						<i class="icon-cogs"></i>
+						<span class="title">Equipment</span>
+						<span class="arrow "></span>
+					<% end %>
+				</li>
+				
+				<li>
+					<%= link_to current_timesheets_path do %>
+						<i class="icon-time"></i>
+						<span class="title">Timesheets</span>
+						<span class="arrow "></span>
+					<% end %>
+				</li>
+				
+				<li>
+					<%= link_to employees_path do %>
+						<i class="icon-sitemap"></i>
+						<span class="title">Employees</span>
+						<span class="arrow "></span>
+					<% end %>
+				</li>
+				
+				<li>
+					<%= link_to jobs_path do %>
+						<i class="icon-road"></i>
+						<span class="title">Jobs</span>
+						<span class="arrow "></span>
+					<% end %>
+				</li>
+				
+				<li>
+					<%= link_to users_path do %>
+						<i class="icon-user"></i>
+						<span class="title">Users</span>
+						<span class="arrow "></span>
+					<% end %>
+				</li>
+			
+			</ul>
+			<!-- END SIDEBAR MENU -->
+		
+		</div>
+		<!-- END SIDEBAR -->
+		
+		<!-- BEGIN PAGE -->
+		<div class="page-content">
+			<% flash.each do |key, value| %>
+			      <%= content_tag(:div, value, class: "alert alert-#{key}") %>
+	      <% end %>
+		
+			<%= yield %>
+		
+		</div>
+		<!-- END PAGE -->
+	
+	</div>
+	<!-- END CONTAINER -->
+
+	
+</body>
+</html>

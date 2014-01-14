@@ -1,0 +1,120 @@
+<!-- BEGIN PAGE HEADER -->
+<div class="row">
+	
+	<div class="col-md-12">
+		
+		<!-- BEGIN PAGE TITLE & BREADCRUMB -->
+			<h3 class="page-title">Timesheets</h3>
+			<ul class="page-breadcrumb breadcrumb">
+				<li>
+					<i class="icon-home"></i>
+					<%= link_to "Dashboard", root_path %>
+					<i class="icon-angle-right"></i>
+				</li>
+			</ul>
+		<!-- END PAGE TITLE & BREADCRUMB -->
+		
+	</div><!-- END COL-MD-12 -->
+	
+</div><!-- END ROW -->
+<!-- END PAGE HEADER -->
+
+<div class="row">
+<div class="col-md-7 margin-bottom-20">
+	<%= form_for(@timesheet, :html => { class: "form-inline" }) do |f| %>
+
+			<div class="form-group">
+				<%= f.text_field :startdate, class:"form-control" %>
+			</div>
+
+			<div class="form-group">
+				<%= f.text_field :enddate, class:"form-control" %>
+			</div>
+			
+			<% @employees.each do |employee| %>
+
+				<% @timesheet.date_range(@timesheet.startdate, @timesheet.enddate).each do |week_date| %> 
+					<%= f.fields_for :workdays do |workday_form| %>
+						<%= workday_form.hidden_field :employee_id, :value => employee.id %>
+						<%= workday_form.hidden_field :date, :value => week_date.to_date %>
+						<%= workday_form.hidden_field :timesheet_id, :value => @timesheet.id %>
+					<% end %>
+				<% end %>
+				
+			<% end %>
+		
+		<%= f.submit "New", class: "btn btn-primary" %>
+
+	<% end %>
+</div>
+</div>
+
+<!-- BEGIN PAGE CONTENT -->
+<div class="row">
+<div class="col-md-12">
+
+	<div class="portlet box ">
+		<!-- BEGIN FORM -->
+		<%= form_tag delete_timesheets_path, method: :put do %>
+		
+			<!-- BEGIN PORTLET BODY -->
+			<div class="portlet-body">
+			
+				<div class="table-toolbar">
+					<div class="btn-group">
+						<span class="btn btn-large btn-success edit-button">
+						<i class="icon-edit"></i> Edit
+						</span>
+					</div>
+					
+					<div class="btn-group">
+						<%= button_tag(type: "submit", class: "delete-checkbox btn btn-large btn-danger clearfix") do %>
+						<i class="icon-remove"></i> Delete
+						<% end %>
+					</div>
+				</div>
+				
+				<div class="table-responsive">
+				<table class="table table-bordered table-striped" id="timesheets_list">
+					<thead>
+					<tr>
+						<th class="table-checkbox delete-checkbox"><input type="checkbox" class="group-checkable" data-set="#timesheets_list .checkboxes" /></th>
+						<th>Start Date</th>
+						<th>End Date</th>
+					</tr>
+					</thead>
+					
+					<tbody>
+					<% @timesheets.each do |timesheet| %>
+						<tr class="odd gradeX">
+						   <td class="delete-checkbox"><%= check_box_tag "timesheet_ids[]", timesheet.id, false, class: "checkboxes"  %></td>
+						   <td><%= link_to timesheet.startdate.strftime("%b %e, %Y %l:%M%p"), timesheet_path(timesheet) %></td>
+							<td><%= link_to timesheet.enddate.strftime("%b %e, %Y %l:%M%p"), timesheet_path(timesheet) %></td>
+							<td style="display:none;"><%= timesheet.startdate %></td>
+						</tr>
+					<% end %>
+					</tbody>
+				</table>
+				
+				<div class="table-toolbar">					
+					<div class="btn-group">
+						<span class="btn btn-large btn-success edit-button">
+						<i class="icon-edit"></i> Edit
+						</span>
+					</div>
+					
+					<div class="btn-group">
+						<%= button_tag(type: "submit", class: "delete-checkbox btn btn-large btn-danger clearfix") do %>
+						<i class="icon-remove"></i> Delete
+						<% end %>
+					</div>
+				</div>
+			
+			</div>
+			<!-- END PORTLET BODY -->			
+		<% end %>
+		<!-- END FORM -->
+	</div>
+</div>
+</div>
+<!-- END PAGE CONTENT -->
