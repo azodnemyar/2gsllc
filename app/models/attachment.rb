@@ -8,10 +8,10 @@ class Attachment < ActiveRecord::Base
     :default_url => "/images/default_avatar.png", 
     :storage => :s3, 
     :s3_credentials => { 
-      :access_key_id => "", 
-      :secret_access_key => "" 
+      :access_key_id => "AKIAJ6QXR3XGAZFWGDHA", 
+      :secret_access_key => "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" 
     }, 
-    :bucket => ""
+    :bucket => "TwoGS_App"
 
 private
   def attachment_params
