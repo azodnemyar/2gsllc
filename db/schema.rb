@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20131125175050) do
     t.integer  "timesheet_id"
     t.integer  "job_id"
     t.datetime "date"
-    t.integer  "hours",        limit: 255
+    t.float    "hours"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
